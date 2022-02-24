@@ -13,8 +13,8 @@ ConVar* Cvar_speechRate;
 void say(char* input, char* voice)
 {
 	b1->skipSpeech();
-	if (b1->speechRate != Cvar_speechRate->m_fValue) {
-	  b1->setRate(Cvar_speechRate->m_fValue);
+	if (b1->speechRate != Cvar_speechRate->GetFloat()) {
+	  b1->setRate(Cvar_speechRate->GetFloat());
 	}
 	spdlog::info("About to say: \"{}\"", input);
 	b1->speakText(input);
@@ -34,8 +34,8 @@ SQRESULT SQ_TTSsay(void* sqvm)
 		spdlog::info("Going to say: \"{}\"", input);
 
 		//b1->skipSpeech();
-		if (b1->speechRate != Cvar_speechRate->m_fValue) {
-			b1->setRate(Cvar_speechRate->m_fValue);
+		if (b1->speechRate != Cvar_speechRate->GetFloat()) {
+			b1->setRate(Cvar_speechRate->GetFloat());
 		}
 		spdlog::info("About to say: \"{}\"", input);
 		b1->speakText(input);
@@ -50,7 +50,7 @@ void InitialiseTTS(HMODULE baseAddress)
 	if (IsDedicated())
 		return;
 
-	Cvar_speechRate = RegisterConVar("speech_rate", "2.5", FCVAR_NONE, "");
+	Cvar_speechRate = new ConVar("speech_rate", "2.5", FCVAR_NONE, "");
 
 	spdlog::info("adding tts func registration");
 	g_ClientSquirrelManager->AddFuncRegistration("void", "TTSsay", "string input, string voice = \"M\"", "Say something using SAPI TTS", SQ_TTSsay);
